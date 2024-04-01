@@ -19,8 +19,8 @@
     }
 
     try {
-        $user = 'u67449';
-        $pass = '4242897';
+        $user = 'u67450';
+        $pass = '4290181';
         $db = new PDO('mysql:host=localhost;dbname=u67449', $user, $pass,
             [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 
