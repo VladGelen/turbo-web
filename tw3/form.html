@@ -13,19 +13,19 @@
             <form class="mx-auto" action="" method="POST">
                 <div class="my-3">
                     <label for="fio" class="form-label text-body-secondary"><strong>ФИО</strong></label>
-                    <input type="text" class="form-control" name="fio" id="fio" placeholder="Имя Фамилия"/>
+                    <input type="text" class="form-control" name="fio" id="fio" placeholder="Имя Фамилия" required pattern="[А-Яа-яЁё]+\s[А-Яа-яЁё]+\s[А-Яа-яЁё]+"/>
                 </div>
                 <div class="my-3">
                     <label for="telInput" class="form-label text-body-secondary"><strong>Телефон</strong></label>
-                    <input type="tel" class="form-control" name="tel" id="telInput" placeholder="номер"/>
+                    <input type="tel" class="form-control" name="tel" id="telInput" placeholder="номер" required pattern="[0-9]{10}"/>
                 </div>
                 <div class="my-3">
                     <label for="emailInput" class="form-label text-body-secondary"><strong>Эл. Почта</strong></label>
-                    <input type="email" class="form-control" name="email" id="emailInput" placeholder="почта"/>
+                    <input type="email" class="form-control" name="email" id="emailInput" placeholder="почта" required/>
                 </div>
                 <div class="my-3">
                     <label for="bdInput" class="form-label text-body-secondary"><strong>Дата рождения</strong></label>
-                    <input type="date" class="form-control" name="date" id="bdInput"/>
+                    <input type="date" class="form-control" name="date" id="bdInput" required/>
                 </div>
                 <div class="my-3">
                     <legend class="col-form-label text-body-secondary"><strong>Пол</strong></legend>

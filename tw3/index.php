@@ -21,7 +21,7 @@
     try {
         $user = 'u67450';
         $pass = '4290181';
-        $db = new PDO('mysql:host=localhost;dbname=u67449', $user, $pass,
+        $db = new PDO('mysql:host=localhost;dbname=u67450', $user, $pass,
             [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 
         // Добавление записи о пользователе
