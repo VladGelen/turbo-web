@@ -10,8 +10,40 @@
     }
 
     $errors = FALSE;
+// Валидация имени
 
-    // Проверка наличия ошибок ввода данных
+if (empty($_POST['fio'])) {
+    $errors = TRUE;
+    echo 'Пожалуйста, введите ваше имя.<br>';
+}
+
+
+
+// Валидация телефона
+
+if (empty($_POST['tel'])) {
+    $errors = TRUE;
+    echo 'Пожалуйста, введите ваш номер телефона.<br>';
+}
+
+
+
+// Валидация email
+
+if (empty($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+    $errors = TRUE;
+    echo 'Пожалуйста, введите корректный email.<br>';
+}
+
+
+
+// Валидация даты
+
+if (empty($_POST['date']) || !strtotime($_POST['date'])) {
+    $errors = TRUE;
+    echo 'Пожалуйста, введите корректную дату.<br>';
+}
+
 
 
     if ($errors) {
@@ -24,18 +56,18 @@
         $db = new PDO('mysql:host=localhost;dbname=u67450', $user, $pass,
             [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 
-        // Добавление записи о пользователе
+   
         $stmt_user = $db->prepare("INSERT INTO users (fio, tel, email, date, gender, bio, checkbox) 
                           VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt_user->execute([$_POST['fio'], $_POST['tel'], $_POST['email'], $_POST['date'], $_POST['gender'], $_POST['bio'], $_POST['checkbox']]);
 
-// Получение ID только что добавленного пользователя
+
         $user_id = $db->lastInsertId();
 
-// Получение списка выбранных языков программирования
+
         $selected_languages = $_POST['select'];
 
-// Добавление записей о выбранных языках программирования
+
         foreach ($selected_languages as $lang_id) {
             $stmt_lang = $db->prepare("INSERT INTO user_programming_languages (user_id, lang_id) VALUES (?, ?)");
             $stmt_lang->execute([$user_id, $lang_id]);
