@@ -66,7 +66,7 @@ if (empty($_COOKIE['language_value'])) {
 }
     session_start();
     if (!empty($_COOKIE[session_name()]) && !empty($_SESSION['login'])) {
-        $db = new PDO('mysql:host=localhost;dbname=u67439', 'u67439', '4415842', array(PDO::ATTR_PERSISTENT => true));
+        $db = new PDO('mysql:host=localhost;dbname=u76450', 'u67450', '4290181', array(PDO::ATTR_PERSISTENT => true));
         $stmt = $db->prepare("SELECT * FROM application WHERE id = ?");
         $stmt->execute([$_SESSION['uid']]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -96,7 +96,7 @@ else {
     } else {
         setcookie('names_value', $_POST['names'], time() + 12 * 30 * 24 * 60 * 60);
     }
-    if (!preg_match('/^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$', $_POST['phone'])) {
+    if (!preg_match('/^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/', $_POST['phone'])) {
         setcookie('phone_error', '1', time() + 24 * 60 * 60);
         $errors = TRUE;
     } else {
@@ -152,7 +152,7 @@ else {
     }
     if (!empty($_COOKIE[session_name()]) &&
         session_start() && !empty($_SESSION['login'])) {
-        $db = new PDO('mysql:host=localhost;dbname=u67439', 'u67439', '4415842', array(PDO::ATTR_PERSISTENT => true));
+        $db = new PDO('mysql:host=localhost;dbname=u76450', 'u67450', '4290181', array(PDO::ATTR_PERSISTENT => true));
         $stmt = $db->prepare("UPDATE application SET names = ?, phones = ?, email = ?, data = ?, gender = ?, biography = ? WHERE id = ?");
         $stmt->execute([$_POST['names'], $_POST['phone'], $_POST['email'], $_POST['data'], $_POST['gender'], $_POST['biography'], $_SESSION['uid']]);
         $stmt = $db->prepare("DELETE FROM languages WHERE id = ?");
@@ -172,7 +172,7 @@ else {
         $login = $chars[rand(0,25)] . strval(time());
         setcookie('login', $login);
         setcookie('pass', $pass);
-        $db = new PDO('mysql:host=localhost;dbname=u67439', 'u67439', '4415842', array(PDO::ATTR_PERSISTENT => true));
+        $db = new PDO('mysql:host=localhost;dbname=u76450', 'u67450', '4290181', array(PDO::ATTR_PERSISTENT => true));
         $stmt = $db->prepare("INSERT INTO application SET names = ?, phones = ?, email = ?, dates = ?, gender = ?, biography = ?");
         $stmt->execute([$_POST['names'], $_POST['phone'], $_POST['email'], $_POST['data'], $_POST['gender'], $_POST['biography']]);
         $res = $db->query("SELECT max(id) FROM application");
