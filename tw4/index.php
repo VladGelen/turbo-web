@@ -7,7 +7,7 @@
 
 // Подключение к базе данных
 global $user, $pass;
-include('../ex4/config.php');
+include('../tw4/config.php');
 
 // Установка правильной кодировки
 header('Content-Type: text/html; charset=UTF-8');
