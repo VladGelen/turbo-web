@@ -1,39 +1,73 @@
 <?php
-/**
- * Файл login.php реализует аутентификацию пользователя по логину и паролю.
- * После успешной аутентификации создается сессия, и пользователь перенаправляется на страницу index.php.
- */
-
-// Подключение к базе данных
-global $user, $pass;
-include('config.php');
+// login.php
 
 // Установка правильной кодировки
 header('Content-Type: text/html; charset=UTF-8');
 
-// Проверка метода запроса
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Стартуем сессию
+session_start();
+
+// Если пользователь уже авторизован, перенаправляем его на главную страницу
+if (isset($_SESSION['user_id'])) {
+    header('Location: index.php');
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Подключаем конфиг для подключения к базе данных
+    include('config.php');
+
+    // Подключаемся к базе данных
     try {
-        // Подключение к базе данных
-        $db = new PDO("mysql:host=localhost;dbname=u67450", $user, $pass, [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $db = new PDO("mysql:host=localhost;dbname=u67450", $user, $pass, [
+            PDO::ATTR_PERSISTENT => true,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        ]);
 
-        // Проверка наличия пользователя в базе данных
-        $stmt = $db->prepare("SELECT * FROM users WHERE login = ?");
+        // Проверяем логин и пароль
+        $stmt = $db->prepare("SELECT id, password_hash FROM users WHERE login = ?");
         $stmt->execute([$_POST['login']]);
-        $user = $stmt->fetch();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($_POST['password'], $user['password_hash'])) {
-            // Если пользователь существует и пароль совпадает, создаем сессию и перенаправляем на index.php
-            session_start();
+        if ($user && password_verify($_POST['pass'], $user['password_hash'])) {
+            // Устанавливаем переменные сессии
+            $_SESSION['user_id'] = $user['id'];
             $_SESSION['login'] = $_POST['login'];
+            // Перенаправляем на главную страницу
             header('Location: index.php');
             exit();
         } else {
-            echo '<div class="error">Неверный логин или пароль</div>';
+            $error = 'Неверный логин или пароль';
         }
     } catch (PDOException $e) {
-        echo "Ошибка подключения: " . $e->getMessage();
-        exit();
+        $error = 'Ошибка базы данных: ' . $e->getMessage();
     }
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+</head>
+<body>
+    <h1>Вход</h1>
+
+    <?php
+    if (isset($error)) {
+        echo '<div class="alert alert-danger">' . $error . '</div>';
+    }
+    ?>
+
+    <form action="" method="post">
+        <label for="login">Логин:</label>
+        <input type="text" name="login" id="login" required />
+        <br />
+        <label for="pass">Пароль:</label>
+        <input type="password" name="pass" id="pass" required />
+        <br />
+        <input type="submit" value="Войти" />
+    </form>
+</body>
+</html>
