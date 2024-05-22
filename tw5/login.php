@@ -1,56 +1,39 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Вход в систему</title>
-</head>
-
-<body>
 <?php
+/**
+ * Файл login.php реализует аутентификацию пользователя по логину и паролю.
+ * После успешной аутентификации создается сессия, и пользователь перенаправляется на страницу index.php.
+ */
+
+// Подключение к базе данных
+global $user, $pass;
+include('config.php');
+
+// Установка правильной кодировки
 header('Content-Type: text/html; charset=UTF-8');
-session_start();
-if (!empty($_SESSION['login'])) {
-  session_destroy();
-  header('Location: ./');
+
+// Проверка метода запроса
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        // Подключение к базе данных
+        $db = new PDO("mysql:host=localhost;dbname=u67450", $user, $pass, [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+
+        // Проверка наличия пользователя в базе данных
+        $stmt = $db->prepare("SELECT * FROM users WHERE login = ?");
+        $stmt->execute([$_POST['login']]);
+        $user = $stmt->fetch();
+
+        if ($user && password_verify($_POST['password'], $user['password_hash'])) {
+            // Если пользователь существует и пароль совпадает, создаем сессию и перенаправляем на index.php
+            session_start();
+            $_SESSION['login'] = $_POST['login'];
+            header('Location: index.php');
+            exit();
+        } else {
+            echo '<div class="error">Неверный логин или пароль</div>';
+        }
+    } catch (PDOException $e) {
+        echo "Ошибка подключения: " . $e->getMessage();
+        exit();
+    }
 }
-if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-
-  if (!empty($_GET['nologin']))
-    print("<div>Пользователя с таким логином не существует</div>");
-  if (!empty($_GET['wrongpass']))
-    print("<div>Неверный пароль!</div>");
-
 ?>
-  <form action="" method="post">
-    <input name="login" placeholder="Введи логин"/>
-    <input name="pass" placeholder="Введи пароль"/>
-    <input type="submit" id="login" value="Войти" />
-  </form>
-
-  <?php
-}
-else {
-  $db = new PDO('mysql:host=localhost;dbname=u67450', 'u67450', '4290181', array(PDO::ATTR_PERSISTENT => true));
-  $stmt = $db->prepare("SELECT id, pass FROM login_pass WHERE login = ?");
-  $stmt -> execute([$_POST['login']]);
-  $row = $stmt->fetch(PDO::FETCH_ASSOC);
-  if (!$row) {
-    header('Location: ?nologin=1');
-    exit();
-  }
-  if($row["pass"] != md5($_POST['pass'])) {
-    header('Location: ?wrongpass=1');
-    exit();
-  }
-  $_SESSION['login'] = $_POST['login'];
-  $_SESSION['uid'] = $row["id"];
-  header('Location: ./');
-}
-
-?>
-
-</body>
-
-</html>
