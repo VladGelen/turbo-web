@@ -44,7 +44,31 @@ if (empty($_POST['date']) || !strtotime($_POST['date'])) {
     echo 'Пожалуйста, введите корректную дату.<br>';
 }
 
+// Валидация гендера
+if (empty($_POST['gender']) || !in_array($_POST['gender'], ['male', 'female'])) {
+    $errors = TRUE;
+    echo 'Пожалуйста, выберите корректный пол.<br>';
+}
 
+// Валидация чекбокса
+if (empty($_POST['checkbox']) || $_POST['checkbox'] !== '1') {
+    $errors = TRUE;
+    echo 'Пожалуйста, подтвердите согласие с условиями.<br>';
+}
+
+// Валидация выбранных языков программирования
+if (empty($_POST['select']) || !is_array($_POST['select'])) {
+    $errors = TRUE;
+    echo 'Пожалуйста, выберите хотя бы один язык программирования.<br>';
+} else {
+    foreach ($_POST['select'] as $lang_id) {
+        if (!is_numeric($lang_id)) {
+            $errors = TRUE;
+            echo 'Пожалуйста, выберите корректные языки программирования.<br>';
+            break;
+        }
+    }
+}
 
     if ($errors) {
         exit();
